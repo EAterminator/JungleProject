@@ -174,13 +174,13 @@ public class GameController implements GameListener {
             if (rank == 8) {
                 name = "Elephant";
             }
-            model.setChessPiece(new ChessboardPoint(to_x,to_y),null);
+            model.setChessPiece(new ChessboardPoint(to_x,to_y),null);swapColor();swapColor();
             if (EatenPoint.size()!=0){
         if (EatenPoint.elementAt(EatenPoint.size()-1).getRow()==to_x&&EatenPoint.elementAt(EatenPoint.size()-1).getCol()==to_y){
             model.setChessPiece(EatenPoint.pop(),EatenPiece.pop());}}
             model.setChessPiece(new ChessboardPoint(selected_x,selected_y),new ChessPiece(player,name,rank));
             view.initiateChessComponent(model);
-            view.repaint();
+            view.repaint();swapColor();swapColor();
 
         }
 
