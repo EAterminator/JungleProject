@@ -272,10 +272,10 @@ public class GameController implements GameListener {
                         view.initiateChessComponent(model);
                         view.repaint();
                     } else {
-                        JOptionPane.showMessageDialog(chessGameFrame, "Error type 105: Invalid move", "Error", JOptionPane.ERROR_MESSAGE);break;
+                        JOptionPane.showMessageDialog(chessGameFrame, "Error type 105: Invalid move", "Error", JOptionPane.ERROR_MESSAGE);model.clearBoard();model.initPieces();view.initiateChessComponent(model);view.repaint();break;
                     }
                 } catch (NullPointerException e) {
-                    JOptionPane.showMessageDialog(chessGameFrame, "Error type 105: Invalid move", "Error", JOptionPane.ERROR_MESSAGE);break;
+                    JOptionPane.showMessageDialog(chessGameFrame, "Error type 105: Invalid move", "Error", JOptionPane.ERROR_MESSAGE);model.clearBoard();model.initPieces();view.initiateChessComponent(model);view.repaint();break;
                 }
 
                 // Perform any necessary actions with the loaded history data
