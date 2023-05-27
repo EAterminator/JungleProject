@@ -37,6 +37,7 @@ public class ChessGameFrame extends JFrame {
         addBackButton();
         addLoadButton();
         addSaveButton();
+        addReplayButton();
     }
     public ChessGameFrame(int width, int height,GameController gameController) {
         setTitle("2023 CS109 Project Demo"); //设置标题
@@ -118,6 +119,19 @@ public class ChessGameFrame extends JFrame {
         button.addActionListener((e) -> {JOptionPane.showMessageDialog(this, "backed");
         gameController.regret();});
         button.setLocation(HEIGTH, HEIGTH / 10 + 480);
+        button.setSize(200, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+    }
+    private void addReplayButton() {
+        JButton button = new JButton("Replay");
+        button.addActionListener((e) -> {
+           try {
+               gameController.replay();
+           }catch (IndexOutOfBoundsException indexOutOfBoundsException){
+               JOptionPane.showMessageDialog(this, "already at the end of the game!", "Warning", JOptionPane.ERROR_MESSAGE);
+           }});
+        button.setLocation(HEIGTH, HEIGTH / 10 + 600);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);

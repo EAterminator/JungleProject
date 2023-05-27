@@ -34,7 +34,9 @@ public class GameController implements GameListener {
     private ChessboardComponent view;
     private PlayerColor currentPlayer;
     private int round=1;
+    private int historyIndex=0;
     private Stack<String> history = new Stack<>();
+    private List<String> historyList = new ArrayList<>();
 
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
@@ -123,8 +125,10 @@ public class GameController implements GameListener {
                 round = round + 1;
             }
             // Add move to history
-            if (model.getChessPieceAt(selectedPoint).getOwner()==PlayerColor.BLUE){history.add(round+"/" +"0/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
-            else {history.add(round+"/" +"1/"+model.getChessPieceAt(selectedPoint).getRank()+"/"+ selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
+            if (model.getChessPieceAt(selectedPoint).getOwner()==PlayerColor.BLUE){history.add(round+"/" +"0/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());
+                historyList.add(round+"/" +"0/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
+            else {history.add(round+"/" +"1/"+model.getChessPieceAt(selectedPoint).getRank()+"/"+ selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());
+                historyList.add(round+"/" +"1/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
             System.out.println(round);
             model.moveChessPiece(selectedPoint, point);
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
@@ -200,8 +204,10 @@ public class GameController implements GameListener {
             component.repaint();
         } else if (selectedPoint!=null&& model.isValidCapture(selectedPoint,point)) {
             if (model.getChessPieceAt(selectedPoint).getOwner()==PlayerColor.RED){round=round+1;}
-            if (model.getChessPieceAt(selectedPoint).getOwner()==PlayerColor.BLUE){history.add(round+"/" +"0/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
-            else {history.add(round+"/" +"1/"+model.getChessPieceAt(selectedPoint).getRank()+"/"+ selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
+            if (model.getChessPieceAt(selectedPoint).getOwner()==PlayerColor.BLUE){history.add(round+"/" +"0/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());
+                historyList.add(round+"/" +"0/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
+            else {history.add(round+"/" +"1/"+model.getChessPieceAt(selectedPoint).getRank()+"/"+ selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());
+                historyList.add(round+"/" +"1/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
             System.out.println(round);
             EatenPiece.add(model.getChessPieceAt(point));
             EatenPoint.add(point);
@@ -306,7 +312,61 @@ public class GameController implements GameListener {
         swapColor();
         view.initiateChessComponent(model);
         view.repaint();
+        history=new Stack<>();
+        historyList=new ArrayList<>();
+        historyIndex=0;
     }
+    public void replay(){
+        if (historyIndex==0){model.clearBoard();
+            model.initPieces();
+            setRound(1);
+            setCurrentPlayer(PlayerColor.RED);
+            swapColor();
+        }
+
+                String history1=historyList.get(historyIndex);
+                String[] parts = history1.split("/");
+                round=Integer.parseInt(parts[0]);
+                PlayerColor player = (parts[1].equals("0")) ? PlayerColor.BLUE : PlayerColor.RED;
+                int rank = Integer.parseInt(parts[2]);
+                int selected_x = Integer.parseInt(parts[3]);
+                int selected_y = Integer.parseInt(parts[4]);
+                int to_x=Integer.parseInt(parts[5]);
+                int to_y=Integer.parseInt(parts[6]);
+                String name = null;
+                if (rank == 1) {
+                    name = "Mouse";
+                }
+                if (rank == 2) {
+                    name = "Cat";
+                }
+                if (rank == 3) {
+                    name = "Dog";
+                }
+                if (rank == 4) {
+                    name = "Wolf";
+                }
+                if (rank == 5) {
+                    name = "Leopard";
+                }
+                if (rank == 6) {
+                    name = "Tiger";
+                }
+                if (rank == 7) {
+                    name = "Lion";
+                }
+                if (rank == 8) {
+                    name = "Elephant";
+                }
+                model.setChessPiece(new ChessboardPoint(selected_x, selected_y), null);
+                model.setChessPiece(new ChessboardPoint(to_x, to_y), new ChessPiece(player, name, rank));
+
+        view.initiateChessComponent(model);
+        view.repaint();
+        historyIndex++;
+    }
+
+
 
 
     public int getRound() {
