@@ -110,13 +110,13 @@ public class Chessboard {
     public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
         if ((getChessPieceAt(src).getOwner()==PlayerColor.BLUE&&!(dest.getCol()==3&&dest.getRow()==0))||(getChessPieceAt(src).getOwner()==PlayerColor.RED&&!(dest.getCol()==3&&dest.getRow()==8))){
         if (getChessPieceAt(src).getRank()!=7&&getChessPieceAt(src).getRank()!=6&&getChessPieceAt(src).getRank()!=1){//when not lion,tiger,mouse
-        if (getChessPieceAt(src) == null || getChessPieceAt(dest) != null|| riverCell.contains(dest)||calculateDistance(src,dest)!=1) {
+        if (getChessPieceAt(src) == null || riverCell.contains(dest)||calculateDistance(src,dest)!=1) {
             return false;
         }else return true;}
-        else if (getChessPieceAt(src).getRank()==1){if (getChessPieceAt(src) == null || getChessPieceAt(dest) != null||calculateDistance(src,dest)!=1) {
+        else if (getChessPieceAt(src).getRank()==1){if (calculateDistance(src,dest)!=1) {
             return false;
         }else return true;}//when is a mouse
-        else {if (getChessPieceAt(src) == null || getChessPieceAt(dest) != null|| riverCell.contains(dest)) {//when is tiger or lion
+        else {if (getChessPieceAt(src) == null || riverCell.contains(dest)) {//when is tiger or lion
             return false;
         }else if (((src.getCol()==dest.getCol()||src.getRow()==dest.getRow())&&(Math.abs(src.getCol()-dest.getCol())==3||Math.abs(src.getRow()-dest.getRow())==4))&&(riverCellNearby(src)&&riverCellNearby(dest)&&checkMouseInRiver(src,dest)))
         {
@@ -152,10 +152,10 @@ public class Chessboard {
         if (!srcPiece.canCapture(destPiece)&& !trapCellRed.contains(dest) && !trapCellBlue.contains(dest)) {
             return false;
         }
+        if (riverCell.contains(src)&&riverCell.contains(dest)){return true;}
         if (riverCell.contains(src) && !trapCellRed.contains(dest) && !trapCellBlue.contains(dest)) {
             return false;
         }
-        if (riverCell.contains(src)&&riverCell.contains(dest)){return true;}
         if (srcPiece.getOwner() == PlayerColor.BLUE && trapCellBlue.contains(dest)) {
             return true;
         }

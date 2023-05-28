@@ -7,11 +7,13 @@ import view.CellComponent;
 import view.ChessGameFrame;
 import view.ChessboardComponent;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.text.View;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -98,11 +100,69 @@ public class GameController implements GameListener {
             }
         }
 
-        if (model.getChessPieceAt(new ChessboardPoint(0, 3)) != null ){win_red=true;}if (model.getChessPieceAt(new ChessboardPoint(8, 3)) != null) {
+        if (model.getChessPieceAt(new ChessboardPoint(0, 3)) != null ){
+            win_red=true;
+            try {
+                // Open an audio input stream.
+                File soundFile = new File("resource/niganma.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+
+                // Get a sound clip resource.
+                Clip clip = AudioSystem.getClip();
+
+                // Open audio clip and load samples from the audio input stream.
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+        }
+        if (model.getChessPieceAt(new ChessboardPoint(8, 3)) != null) {
            win_blue=true;
+            try {
+                // Open an audio input stream.
+                File soundFile = new File("resource/niganma.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+
+                // Get a sound clip resource.
+                Clip clip = AudioSystem.getClip();
+
+                // Open audio clip and load samples from the audio input stream.
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
         }
         if (win_blue || win_red) {
-            showWinMessage(win_blue ? PlayerColor.BLUE : PlayerColor.RED); // 显示胜利者的弹窗消息
+            showWinMessage(win_blue ? PlayerColor.BLUE : PlayerColor.RED);
+            try {
+                // Open an audio input stream.
+                File soundFile = new File("nigaresource/niganma.wavnma.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+
+                // Get a sound clip resource.
+                Clip clip = AudioSystem.getClip();
+
+                // Open audio clip and load samples from the audio input stream.
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+            // 显示胜利者的弹窗消息
             return true;
         } else {
             return false;
@@ -134,8 +194,9 @@ public class GameController implements GameListener {
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
             selectedPoint = null;
             swapColor();win();
-
+            view.initiateChessComponent(model);
             view.repaint();
+
 
 
 
@@ -202,7 +263,7 @@ public class GameController implements GameListener {
             selectedPoint = null;
             component.setSelected(false);
             component.repaint();
-        } else if (selectedPoint!=null&& model.isValidCapture(selectedPoint,point)) {
+        } else if (selectedPoint!=null&& model.isValidCapture(selectedPoint,point)&& model.isValidMove(selectedPoint,point)) {
             if (model.getChessPieceAt(selectedPoint).getOwner()==PlayerColor.RED){round=round+1;}
             if (model.getChessPieceAt(selectedPoint).getOwner()==PlayerColor.BLUE){history.add(round+"/" +"0/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());
                 historyList.add(round+"/" +"0/"+ model.getChessPieceAt(selectedPoint).getRank()+"/"+selectedPoint.getRow() + "/" + selectedPoint.getCol() + "/" + point.getRow() + "/" + point.getCol());}
@@ -217,6 +278,25 @@ public class GameController implements GameListener {
             selectedPoint = null;
             swapColor();win();
             view.repaint();
+            try {
+                // Open an audio input stream.
+                File soundFile = new File("resource/short.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+
+                // Get a sound clip resource.
+                Clip clip = AudioSystem.getClip();
+
+                // Open audio clip and load samples from the audio input stream.
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+
         }
         // TODO: Implement capture function
     }
@@ -365,12 +445,108 @@ public class GameController implements GameListener {
         view.repaint();
         historyIndex++;
     }
+    public void EasyAI(){
+       double i=Math.random();
+       int rank= (int) (i*10/1);
+        for (int j = 0; j < 9; j++) {
+            for (int k = 0; k < 7; k++) {
+                ChessboardPoint selected_point = new ChessboardPoint(j, k);
+                if (model.getChessPieceAt(selected_point) == null) {
+                } else {
+                    if (model.getChessPieceAt(selected_point).getRank() == rank && model.getChessPieceOwner(selected_point) == currentPlayer) {
+                        for (int l = 0; l < 9; l++) {
+                            for (int m = 0; m < 7; m++) {
+                                ChessboardPoint currentpoint = new ChessboardPoint(l, m);
+                                if (model.getChessPieceAt(currentpoint) == null) {
+                                    if (selected_point != null && model.isValidMove(selected_point, currentpoint)) {
+                                        if (model.getChessPieceAt(selected_point).getOwner() == PlayerColor.RED) {
+                                            round = round + 1;
+                                        }
+                                        // Add move to history
+                                        if (model.getChessPieceAt(selected_point).getOwner() == PlayerColor.BLUE) {
+                                            history.add(round + "/" + "0/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                            historyList.add(round + "/" + "0/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                        } else {
+                                            history.add(round + "/" + "1/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                            historyList.add(round + "/" + "1/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                        }
+                                        System.out.println(round);
+                                        model.moveChessPiece(selected_point, currentpoint);
+                                        view.setChessComponentAtGrid(currentpoint, view.removeChessComponentAtGrid(selected_point));
+                                        selected_point = null;
+                                        swapColor();
+                                        win();
+                                        view.initiateChessComponent(model);
+                                        view.repaint();
+                                        try {
+                                            // Open an audio input stream.
+                                            File soundFile = new File("resource/zhiyin.wav");
+                                            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 
+                                            // Get a sound clip resource.
+                                            Clip clip = AudioSystem.getClip();
 
+                                            // Open audio clip and load samples from the audio input stream.
+                                            clip.open(audioIn);
+                                            clip.start();
+                                        } catch (UnsupportedAudioFileException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        } catch (LineUnavailableException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
 
+                                } else {try{
+                                    if (model.isValidMove(selected_point, currentpoint) && model.isValidCapture(selected_point, currentpoint)) {
+                                        if (model.getChessPieceAt(selected_point).getOwner() == PlayerColor.RED) {
+                                            round = round + 1;
+                                        }
+                                        if (model.getChessPieceAt(selected_point).getOwner() == PlayerColor.BLUE) {
+                                            history.add(round + "/" + "0/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                            historyList.add(round + "/" + "0/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                        } else {
+                                            history.add(round + "/" + "1/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                            historyList.add(round + "/" + "1/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                        }
+                                        System.out.println(round);
+                                        EatenPiece.add(model.getChessPieceAt(currentpoint));
+                                        EatenPoint.add(currentpoint);
+                                        view.removeChessComponentAtGrid(currentpoint);
+                                        model.captureChessPiece(selected_point, currentpoint);
+                                        view.setChessComponentAtGrid(currentpoint, view.removeChessComponentAtGrid(selected_point));
+                                        selected_point = null;
+                                        swapColor();
+                                        win();
+                                        view.repaint();
+                                        try {
+                                            // Open an audio input stream.
+                                            File soundFile = new File("resource/short.wav");
+                                            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 
-    public int getRound() {
-        return round;
-    }
-}
+                                            // Get a sound clip resource.
+                                            Clip clip = AudioSystem.getClip();
+
+                                            // Open audio clip and load samples from the audio input stream.
+                                            clip.open(audioIn);
+                                            clip.start();
+                                        } catch (UnsupportedAudioFileException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        } catch (LineUnavailableException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }}catch (NullPointerException nullPointerException){}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+}}
 

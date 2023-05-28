@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
+
 public abstract class ChessComponent extends JComponent {
     protected PlayerColor owner;
     private int size;

@@ -4,16 +4,22 @@ package view;
 import controller.GameController;
 import model.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.io.File;
+import javax.imageio.ImageIO;
+
 
 import static model.Constant.CHESSBOARD_COL_SIZE;
 import static model.Constant.CHESSBOARD_ROW_SIZE;
+
 
 /**
  * This class represents the checkerboard component object on the panel
@@ -142,6 +148,9 @@ public class ChessboardComponent extends JComponent {
                 CellComponent cell;
                 if (riverCell.contains(temp)) {
                     cell = new CellComponent(Color.CYAN, calculatePoint(i, j), CHESS_SIZE);
+                    ImageIcon imageIcon = new ImageIcon("D:\\javaprojects\\JungleDefault\\resource\\water.jpg");
+                    Image image = imageIcon.getImage();
+                    cell.setImage(image);
                     this.add(cell);
                 } else if (trapCell.contains(temp)) {
                     cell=new CellComponent(Color.ORANGE,calculatePoint(i,j),CHESS_SIZE);this.add(cell);
