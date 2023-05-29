@@ -156,10 +156,14 @@ public class ChessboardComponent extends JComponent {
                     cell=new CellComponent(Color.ORANGE,calculatePoint(i,j),CHESS_SIZE);
                     ImageIcon imageIcon = new ImageIcon("D:\\javaprojects\\JungleDefault\\resource\\trap.jpg");
                     Image image = imageIcon.getImage();
-                    cell.setImage(image.getScaledInstance(90,90,Image.SCALE_DEFAULT));
+                    cell.setImage(image.getScaledInstance(80,80,Image.SCALE_DEFAULT));
                     this.add(cell);
                 } else if (HomeCell.contains(temp)) {
-                    cell=new CellComponent(Color.BLACK,calculatePoint(i,j),CHESS_SIZE);this.add(cell);
+                    cell=new CellComponent(Color.BLACK,calculatePoint(i,j),CHESS_SIZE);
+                    ImageIcon imageIcon = new ImageIcon("D:\\javaprojects\\JungleDefault\\resource\\home.jpg");
+                    Image image = imageIcon.getImage();
+                    cell.setImage(image.getScaledInstance(180,180,Image.SCALE_DEFAULT));
+                    this.add(cell);
                 } else {
                     cell = new CellComponent(Color.green, calculatePoint(i, j), CHESS_SIZE);
                     ImageIcon imageIcon = new ImageIcon("D:\\javaprojects\\JungleDefault\\resource\\grass.jpg");
