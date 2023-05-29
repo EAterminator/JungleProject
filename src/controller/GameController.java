@@ -313,17 +313,25 @@ public class GameController implements GameListener {
             while (line != null) {
                 String[] parts = line.split("/");
                 line= br.readLine();
-                if (parts.length != 7) {
-                    throw new Exception("Invalid chess piece: 103");
+                if (Integer.parseInt(parts[2])<=0||Integer.parseInt(parts[2])>8) {
+                    JOptionPane.showMessageDialog(chessGameFrame,"error type:103 illegal chess piece");
                 }
                 round=Integer.parseInt(parts[0]);
-                PlayerColor player = (parts[1].equals("0")) ? PlayerColor.BLUE : PlayerColor.RED;
+                PlayerColor player =PlayerColor.BLUE;
+                if (parts[1].equals("0")){
+                    player=PlayerColor.BLUE;
+                } else if (parts[1].equals("1")) {
+                    player=PlayerColor.RED;
+                }else {JOptionPane.showMessageDialog(chessGameFrame,"error type:104 missing current player");}
                 int rank = Integer.parseInt(parts[2]);
                 int selected_x = Integer.parseInt(parts[3]);
                 int selected_y = Integer.parseInt(parts[4]);
                 int to_x=Integer.parseInt(parts[5]);
                 int to_y=Integer.parseInt(parts[6]);
                 String name = null;
+                if (selected_x>8||to_x>8||selected_y>6||to_y>6){
+                    JOptionPane.showMessageDialog(chessGameFrame,"error type:102 invalid chessboard size");
+                }
                 if (rank == 1) {
                     name = "Mouse";
                 }
@@ -367,8 +375,8 @@ public class GameController implements GameListener {
                 // Perform any necessary actions with the loaded history data
 
         }}
-            catch (IOException e) {
-            System.err.format("IOException: %s%n", e);
+            catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            System.err.format("error type 102: %s%n", indexOutOfBoundsException);
         }}
 
 
@@ -548,5 +556,71 @@ public class GameController implements GameListener {
             }
         }
 
-}}
+}
+
+    public void HardAI(){
+        double i=Math.random();
+        for (int j = 0; j < 9; j++) {
+            for (int k = 0; k < 7; k++) {
+                ChessboardPoint selected_point = new ChessboardPoint(j, k);
+                if (model.getChessPieceAt(selected_point) == null) {
+                } else {
+                    if (model.getChessPieceOwner(selected_point) == currentPlayer) {
+                        for (int l = 0; l < 9; l++) {
+                            for (int m = 0; m < 7; m++) {
+                                ChessboardPoint currentpoint = new ChessboardPoint(l, m);
+                                if (model.getChessPieceAt(currentpoint) != null) {
+                                    try{
+                                        if (model.isValidMove(selected_point, currentpoint) && model.isValidCapture(selected_point, currentpoint)) {
+                                            if (model.getChessPieceAt(selected_point).getOwner() == PlayerColor.RED) {
+                                                round = round + 1;
+                                            }
+                                            if (model.getChessPieceAt(selected_point).getOwner() == PlayerColor.BLUE) {
+                                                history.add(round + "/" + "0/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                                historyList.add(round + "/" + "0/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                            } else {
+                                                history.add(round + "/" + "1/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                                historyList.add(round + "/" + "1/" + model.getChessPieceAt(selected_point).getRank() + "/" + selected_point.getRow() + "/" + selected_point.getCol() + "/" + currentpoint.getRow() + "/" + currentpoint.getCol());
+                                            }
+                                            System.out.println(round);
+                                            EatenPiece.add(model.getChessPieceAt(currentpoint));
+                                            EatenPoint.add(currentpoint);
+                                            view.removeChessComponentAtGrid(currentpoint);
+                                            model.captureChessPiece(selected_point, currentpoint);
+                                            view.setChessComponentAtGrid(currentpoint, view.removeChessComponentAtGrid(selected_point));
+                                            selected_point = null;
+                                            swapColor();
+                                            win();
+                                            view.repaint();
+                                            try {
+                                                // Open an audio input stream.
+                                                File soundFile = new File("resource/short.wav");
+                                                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+
+                                                // Get a sound clip resource.
+                                                Clip clip = AudioSystem.getClip();
+
+                                                // Open audio clip and load samples from the audio input stream.
+                                                clip.open(audioIn);
+                                                clip.start();
+                                            } catch (UnsupportedAudioFileException e) {
+                                                e.printStackTrace();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            } catch (LineUnavailableException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        }}catch (NullPointerException nullPointerException){}
+
+                                } else {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
