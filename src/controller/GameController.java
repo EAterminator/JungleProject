@@ -364,7 +364,7 @@ public class GameController implements GameListener {
                         // Load history
                         history.add(line);
                         view.initiateChessComponent(model);
-                        view.repaint();
+                        view.repaint();swapColor();swapColor();
                     } else {
                         JOptionPane.showMessageDialog(chessGameFrame, "Error type 105: Invalid move", "Error", JOptionPane.ERROR_MESSAGE);model.clearBoard();model.initPieces();view.initiateChessComponent(model);view.repaint();break;
                     }
